@@ -14,7 +14,7 @@ namespace MVService
         public Session()
         {
             Account = WebConfigurationManager.AppSettings["DBAccount"];
-            Database = WebConfigurationManager.AppSettings["DBHost"];
+            Hostname = WebConfigurationManager.AppSettings["DBHost"];
             Password = WebConfigurationManager.AppSettings["DBPassword"];
             Username = WebConfigurationManager.AppSettings["DBUser"];
             AuthenticatedDbUrlPath = WebConfigurationManager.AppSettings["AuthenticatedDbUrlPath"];
@@ -25,20 +25,19 @@ namespace MVService
 
         private U2Connection GetConnection()
         {
-            var con = new U2Connection
+            var connectionString = new U2ConnectionStringBuilder
             {
-                ConnectionString = new U2ConnectionStringBuilder
-                {
-                    UserID = this.Username,
-                    Password = this.Password,
-                    Server = this.Hostname,
-                    Database = this.Account,
-                    AccessMode = "Native",
-                    RpcServiceType = "uvcs",
-                    ServerType = "UniVerse",
-                    Connect_Timeout = 1200
-                }.ToString()
-            };
+                UserID = this.Username,
+                Password = this.Password,
+                Server = this.Hostname,
+                Database = this.Account,
+                AccessMode = "Native",
+                RpcServiceType = "uvcs",
+                ServerType = "UniVerse",
+                Connect_Timeout = 1200
+            }.ToString();
+
+            var con = new U2Connection(connectionString);
             con.Open();
             return con;
         }
@@ -152,7 +151,6 @@ namespace MVService
         protected string Password { get; set; }
         protected string Account { get; set; }
         protected string ServiceType { get; set; }
-        public string Database { get; set; }
         public string AuthenticatedDbUrlPath { get; set; }
 
     }
